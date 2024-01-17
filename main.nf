@@ -46,6 +46,7 @@ switch (params.server) {
         multiqc_config="/data/shared/programmer/configfiles/multiqc_config.yaml"
         tank_storage="/home/mmaj/tank.kga2/data/data.storage.archive";
         data_archive="/lnx01_data2/shared/dataArchive/";
+        modules_dir="/home/mmaj/scripts_lnx01/nextflow_lnx01/dsl2/modules";
     break;
     case 'kga01':
         simgpath="/data/shared/programmer/simg";
@@ -55,6 +56,7 @@ switch (params.server) {
         gatk_exec="singularity run -B ${s_bind} ${simgpath}/gatk4261.sif gatk";
         tank_storage="/home/mmaj/tank.kga/data/data.storage.archive";
         data_archive="/data/shared/dataArchive/";
+        modules_dir="/home/mmaj/LNX01_mmaj/scripts_lnx01/nextflow_lnx01/dsl2/modules";
     break;
 }
 
@@ -70,17 +72,17 @@ def helpMessage() {
 
     johnDoe 112217976652	111184925465	111184925473    23
 
-    The script will automatically look for fastq or ubam files in subfolders at /lnx01_data2/shared/dataArchive/. This location contains read-only access to the data archive, containing all FastQ files. Theres no need to copy or move any raw data (FastQ or uBAM).
+    The script will automatically look for fastq in subfolders at KG Vejle data archive (fastq storage incl novaRuns).
 
     The user can point to a specific folder containing raw data (FastQ) using the --fastq option 
-    This is only needed if raw data only exists outside the data archive (e.g. if data are in personal folders).
+    This is only needed if raw data only exists outside the data archive (e.g. if data are in personal folders or at other KG Vejle analysis servers).
 
 
     Main options:
       --help                print this help message
 
       --genome              hg19 or hg38
-                                Default: hg38 (hg19 not fully implemented!)
+                                Default: hg38
 
       --outdir              Select which folder to write output to.
                                 Default: RNA_results
@@ -179,7 +181,7 @@ include { // SUB workflows:
          SUB_RNA_QC;                            // various QC tools
          SUB_RNA_EXPRESSION;                    // expresssion tools (RSEM, FeatureCounts, HTSeq)    
          SUB_RNA_ALT_SPLICING;
-         SUB_RNA_FUSION } from "./modules/tumorBoard.rna.modules.v1.nf" 
+         SUB_RNA_FUSION } from "${modules_dir}/tumorBoard.rna.modules.v1.nf" 
 
 
 workflow {
