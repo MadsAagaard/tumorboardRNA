@@ -1,1 +1,1 @@
-# tumorboardRNA
+# KG Vejle tumorboard RNA script
