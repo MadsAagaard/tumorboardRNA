@@ -50,7 +50,6 @@ Analyze the cases in samplesheet.txt, but do not call variants:
                                 Default: Do not run Dupradar (timeconsuming!)
 
     Analysis selection options:
-        --skipVariants          Do not call variants (HaplotypeCaller) on RNA seq data
         --skipFusions           Do not call Fusions
 
 # 
