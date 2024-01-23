@@ -31,7 +31,10 @@ params.qualimap                         =null   // not run by default
 
 // Assembly-independent variables:
 
-inhouse_genelist="/data/shared/genomes/databases/genelists/tumortarget/tumortarget.inhouse.v2.127genes.txt"
+//inhouse_genelist="/data/shared/genomes/databases/genelists/tumortarget/tumortarget.inhouse.v2.127genes.txt"
+
+inhouse_genelist="/data/shared/genomes/databases/genelists/tumortarget/240123.inhouse.MOMA.Fusion.241genes.for.grep.txt"
+
 multiqc_config="/data/shared/programmer/configfiles/multiqc_config.yaml"
 
 
@@ -181,7 +184,7 @@ include { // SUB workflows:
          SUB_RNA_QC;                            // various QC tools
          SUB_RNA_EXPRESSION;                    // expresssion tools (RSEM, FeatureCounts, HTSeq)    
          SUB_RNA_ALT_SPLICING;
-         SUB_RNA_FUSION } from "${modules_dir}/tumorBoard.rna.modules.v1.nf" 
+         SUB_RNA_FUSION } from "${modules_dir}/tumorBoard.rna.modules.v2.nf" 
 
 
 workflow {
