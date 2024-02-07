@@ -118,10 +118,10 @@ switch (params.genome) {
         arriba_known_fusions="/data/shared/genomes/hg38/program_DBs/arriba/known_fusions_hg38_GRCh38_v2.1.0.tsv.gz"
 
         //fusioncallers
-        fusioncatcher_db="/data/shared/genomes//hg38/program_DBs/fusioncatcher/human_v102/"
-        fusionreport_db="/data/shared/genomes//hg38/program_DBs/fusion_report_db/"
+        fusioncatcher_db="/data/shared/genomes/hg38/program_DBs/fusioncatcher/human_v102/"
+        fusionreport_db="/data/shared/genomes/hg38/program_DBs/fusion_report_db/"
         // Program indexes:
-        index_rsem = "/data/shared/genomes//hg38/rsem/rsem_hg38_gencode36"
+        index_rsem = "/data/shared/genomes/hg38/rsem/rsem_hg38_gencode36"
         index_star = "${genomes_dir}/hg38/STAR/"
         kallisto_index="/data/shared/genomes/hg38/program_DBs/kallisto/Homo_sapiens.GRCh38.102.cdna.all_kallisto_K31.idx"
         //regions:
@@ -889,14 +889,14 @@ process fusioncatcher {
     cat fusioncatcher/${caseID}.${sampleID}.fusioncatcher.fusions.txt | grep -w -f ${inhouse_genelist} > fusioncatcher/${caseID}.${sampleID}.fusioncatcher.fusions.INHOUSEFUSION_V2.txt
     """
 }
-
+/*
 process fusionreport_inhouse {
     errorStrategy 'ignore'
     tag "$caseID"
 
     publishDir "${caseID}/${params.outdir}/genefusions/fusionReportINHOUSEFUSION_V2/", mode: 'copy'
 
-    //conda '/data/shared/programmer/miniconda3/envs/fusionreport214'
+    conda '/lnx01_data3/shared/programmer/miniconda3/envs/fusionreport'
 
     input:
     tuple val(caseID), path(arriba_fusions), path(starfusion_fusions), path(fusioncatcher_fusions), path(pizzly_fusions)//,path(jaffa_fusions)
@@ -906,6 +906,35 @@ process fusionreport_inhouse {
     script:
     """
     /data/shared/programmer/fusion-report-2.1.5p7/bin/fusion_report run \
+    ${caseID} \
+    fusionreport_output \
+    ${fusionreport_db} \
+    --arriba ${arriba_fusions} \
+    --starfusion ${starfusion_fusions} \
+    --fusioncatcher ${fusioncatcher_fusions} \
+    --pizzly ${pizzly_fusions}
+
+    mv fusionreport_output/index.html fusionreport_output/${caseID}.FusionReport.INHOUSEFUSION_V2.html
+    cp fusionreport_output/${caseID}.FusionReport.INHOUSEFUSION_V2.html .
+    """
+}
+*/
+process fusionreport_inhouse {
+    errorStrategy 'ignore'
+    tag "$caseID"
+
+    publishDir "${caseID}/${params.outdir}/genefusions/fusionReportINHOUSEFUSION_V2/", mode: 'copy'
+
+    conda '/lnx01_data3/shared/programmer/miniconda3/envs/fusionreport'
+
+    input:
+    tuple val(caseID), path(arriba_fusions), path(starfusion_fusions), path(fusioncatcher_fusions), path(pizzly_fusions)//,path(jaffa_fusions)
+    output:
+    path("fusionreport_output/")
+    path("${caseID}.FusionReport.INHOUSEFUSION_V2.html")
+    script:
+    """
+    fusion_report run \
     ${caseID} \
     fusionreport_output \
     ${fusionreport_db} \
@@ -927,7 +956,7 @@ process fusionreport_full {
 
     publishDir "${caseID}/${params.outdir}/genefusions/fusionReportALL/", mode: 'copy'
 
-   // conda '/data/shared/programmer/miniconda3/envs/fusionreport214'
+   conda '/lnx01_data3/shared/programmer/miniconda3/envs/fusionreport'
 
     input:
     tuple val(caseID), path(arriba_fusions), path(starfusion_fusions), path(fusioncatcher_fusions), path(pizzly_fusions)//,path(jaffa_fusions)
@@ -936,7 +965,7 @@ process fusionreport_full {
     path("${caseID}.FusionReport.ALL.html")
     script:
     """
-    /data/shared/programmer/fusion-report-2.1.5p7/bin/fusion_report run \
+    fusion_report run \
     ${caseID} \
     fusionreportALL \
     ${fusionreport_db} \
