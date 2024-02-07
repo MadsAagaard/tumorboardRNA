@@ -97,9 +97,9 @@ switch (params.genome) {
         break;
     case 'hg38':
         // Genome assembly files:
-        genome_fasta = "${genomes_dir}/genomes/hg38/GRCh38.primary.fa"
-        genome_fasta_fai = "${genomes_dir}/genomes/hg38/GRCh38.primary.fa.fai"
-        genome_fasta_dict = "${genomes_dir}/genomes/hg38/GRCh38.primary.dict"
+        genome_fasta = "${genomes_dir}/hg38/GRCh38.primary.fa"
+        genome_fasta_fai = "${genomes_dir}/hg38/GRCh38.primary.fa.fai"
+        genome_fasta_dict = "${genomes_dir}/hg38/GRCh38.primary.dict"
 
         // Gene and transcript annotation files:
         gene_bed12="${genomes_dir}/hg38/gene.annotations/gencode.v36.BED12.bed"
@@ -314,6 +314,9 @@ process rseqc {
     tag "$sampleID"
     publishDir "${caseID}/${params.outdir}/QC/rseqc/", mode: 'copy'
 
+
+    conda '/lnx01_data3/shared/programmer/miniconda3/envs/rseqc'
+    
     input:
     tuple val(caseID),val(sampleID), path(bam), path(bai)// from rseqc_input_bam
 
@@ -336,7 +339,7 @@ process rseqc {
     """
 }
 
-
+/*
 process qualimapRNAseq {
     tag "$sampleID"
     publishDir "${caseID}/${params.outdir}/QC/", mode: 'copy'
@@ -353,6 +356,30 @@ process qualimapRNAseq {
     script:
     """
     qualimap --java-mem-size=10G rnaseq -outdir ${caseID}.${sampleID}.qualimapRNA -bam ${bam} -gtf ${gencode_gtf} -pe 
+    """
+}
+*/
+
+process qualimapRNAseq {
+    tag "$sampleID"
+    publishDir "${caseID}/${params.outdir}/QC/", mode: 'copy'
+
+    input:
+    tuple val(caseID),val(sampleID), path(bam), path(bai)// from qualimapRNA_input_bam
+    
+    output:
+    path ("${caseID}.${sampleID}.qualimapRNA/")
+
+    when:
+    !params.skipQC
+
+    script:
+    """
+    unset DISPLAY
+    singularity run -B ${s_bind} ${simgpath}/qualimap.sif qualimap --java-mem-size=10G \
+    rnaseq \
+    -outdir ${caseID}.${sampleID}.qualimapRNA \
+    -bam ${bam} -gtf ${gencode_gtf} -pe 
     """
 }
 
@@ -375,8 +402,8 @@ process qualimapBAMQC {
     //use_bed = qualimap_ROI ? "-gff ${qualimap_ROI}" : ''
     """
     unset DISPLAY
-    singularity run -B ${s_bind} ${simgpath}/qualimap.sif \
-    qualimap --java-mem-size=5G bamqc \
+    singularity run -B ${s_bind} ${simgpath}/qualimap.sif qualimap --java-mem-size=5G \
+    bamqc \
     -nt ${task.cpus} \
     -outdir ${caseID}.${sampleID}.bamqc \
     -bam ${bam} -gff ${qualimap_ROI} -sd -sdmode 0
@@ -435,6 +462,7 @@ process htseq_count {
     //publishDir "/data/shared/genomes/hg19/databases/rna_seq/inhouse/genecounts/htseq_count/", mode: 'copy'
     cpus 10
 
+    conda '/lnx01_data3/shared/programmer/miniconda3/envs/htseq'
     input:
     tuple val(caseID),val(sampleID), path(bam), path(bai) 
     
