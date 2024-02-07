@@ -36,6 +36,18 @@ params.qualimap                         =null   // not run by default
 inhouse_genelist="/data/shared/genomes/databases/genelists/tumortarget/240123.inhouse.MOMA.Fusion.241genes.for.grep.txt"
 
 multiqc_config="/data/shared/programmer/configfiles/multiqc_config.yaml"
+switch (params.gatk) {
+
+    case 'danak':
+    gatk_image="gatk419.sif";
+    break;
+    case 'new':
+    gatk_image="gatk4400.sif";
+    break;
+    default:
+    gatk_image="gatk4400.sif";
+    break;
+}
 
 
 switch (params.server) {
