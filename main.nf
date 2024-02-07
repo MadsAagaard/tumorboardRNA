@@ -37,7 +37,7 @@ inhouse_genelist="/data/shared/genomes/databases/genelists/tumortarget/240123.in
 
 multiqc_config="/data/shared/programmer/configfiles/multiqc_config.yaml"
 
-
+/*
 switch (params.server) {
     case 'lnx01':
         syspath="/data/shared";
@@ -62,7 +62,7 @@ switch (params.server) {
         modules_dir="/home/mmaj/LNX01_mmaj/scripts_lnx01/nextflow_lnx01/dsl2/modules";
     break;
 }
-
+*/
 
 def helpMessage() {
     log.info"""
@@ -184,7 +184,7 @@ include { // SUB workflows:
          SUB_RNA_QC;                            // various QC tools
          SUB_RNA_EXPRESSION;                    // expresssion tools (RSEM, FeatureCounts, HTSeq)    
          SUB_RNA_ALT_SPLICING;
-         SUB_RNA_FUSION } from "${modules_dir}/tumorBoard.rna.modules.v2.nf" 
+         SUB_RNA_FUSION } from "./modules/tumorBoard.rna.modules.v2.nf" 
 
 
 workflow {

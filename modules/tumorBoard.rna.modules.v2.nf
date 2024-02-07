@@ -29,6 +29,19 @@ switch (params.gatk) {
 }
 
 switch (params.server) {
+
+    case 'lnx02':
+        s_bind="/data/:/data/,/lnx01_data2/:/lnx01_data2/,/fast/:/fast/,/lnx01_data3/:/lnx01_data3/";
+        simgpath="/data/shared/programmer/simg";
+        params.intervals_list="/data/shared/genomes/hg38/interval.files/WGS_splitIntervals/wgs_splitinterval_BWI_subdivision3/*.interval_list";
+        tmpDIR="/fast/TMP/TMP.${user}/";
+        gatk_exec="singularity run -B ${s_bind} ${simgpath}/${gatk_image} gatk";
+        multiqc_config="/data/shared/programmer/configfiles/multiqc_config.yaml"
+        tank_storage="/home/mmaj/tank.kga/data/data.storage.archive/";
+        data_archive="/lnx01_data2/shared/dataArchive/";
+        genomes_dir="/fast/shared/genomes"
+        //modules_dir="/home/mmaj/scripts_lnx01/nextflow_lnx01/dsl2/modules/";
+    break;    
     case 'lnx01':
         syspath="/data/shared";
         s_bind="/data/:/data/,/lnx01_data2/:/lnx01_data2/";
@@ -84,9 +97,9 @@ switch (params.genome) {
         break;
     case 'hg38':
         // Genome assembly files:
-        genome_fasta = "${syspath}/genomes/hg38/GRCh38.primary.fa"
-        genome_fasta_fai = "${syspath}/genomes/hg38/GRCh38.primary.fa.fai"
-        genome_fasta_dict = "${syspath}/genomes/hg38/GRCh38.primary.dict"
+        genome_fasta = "${genomes_dir}/genomes/hg38/GRCh38.primary.fa"
+        genome_fasta_fai = "${genomes_dir}/genomes/hg38/GRCh38.primary.fa.fai"
+        genome_fasta_dict = "${genomes_dir}/genomes/hg38/GRCh38.primary.dict"
 
         // Gene and transcript annotation files:
         gene_bed12="${genomes_dir}/hg38/gene.annotations/gencode.v36.BED12.bed"
@@ -599,6 +612,39 @@ process arriba {
     """
 }
 
+process arriba_240 {
+    errorStrategy 'ignore'
+    tag "$caseID"
+    publishDir "${caseID}/${params.outdir}/genefusions/arriba", mode: 'copy'
+    publishDir "${caseID}/${params.outdir}/TumorTarget_files", mode: 'copy', pattern: "*.{INHOUSEFUSION_V2.txt,pdf}"
+    input:
+    tuple val(caseID), val(sampleID), path(bam), path(bai)// from arriba_input_bam_ch //.join(arriba_input_index_ch)
+    output:
+    path("*.{txt,tsv,pdf}"), emit: arriba_out
+    tuple val(caseID), val(sampleID), path("${caseID}.${sampleID}.arriba.1col.finspect.txt"),emit: arriba_fusion_inspect
+    tuple val(caseID), path("${caseID}.${sampleID}.arriba.fusions.INHOUSEFUSION_V2.txt"), emit: fusions
+    tuple val(caseID), path("${caseID}.${sampleID}.arriba.fusions.txt"), emit: all_fusions
+
+    script:
+    """
+    singularity run -B ${s_bind} ${simgpath}/arriba240.sif /arriba_v2.4.0/arriba \
+    -x ${bam} -g ${gencode_gtf} -a ${genome_fasta} -b ${arriba_blacklist} -o ${caseID}.${sampleID}.arriba.fusions.txt -O ${caseID}.${sampleID}.arriba.discardedfusions.tsv
+    
+    singularity run -B ${s_bind} ${simgpath}/arriba240.sif /arriba_v2.4.0/draw_fusions.R \
+    --fusions=${caseID}.${sampleID}.arriba.fusions.txt \
+    --alignments=${bam} \
+    --annotation=${gencode_gtf} \
+    --cytobands=${arriba_cytoband} \
+    --proteinDomains=${arriba_protein_gff} \
+    --output=${caseID}.${sampleID}.arribafusionsRplots.pdf
+
+    cut -f1-2 ${caseID}.${sampleID}.arriba.fusions.txt | sed "s/\t/--/g" > ${caseID}.${sampleID}.arriba.1col.finspect.txt
+
+    cat ${caseID}.${sampleID}.arriba.fusions.txt| grep -w -f ${inhouse_genelist} > ${caseID}.${sampleID}.arriba.fusions.INHOUSEFUSION_V2.txt
+    """
+}
+
+
 process starfusion {
     errorStrategy 'ignore'
     tag "$caseID"
@@ -958,6 +1004,7 @@ workflow SUB_RNA_FUSION {
 
     main:
     arriba(star_arriba_bam)
+    arriba_240(star_arriba_bam)
     fusioncatcher(case_sample_reads_ch)     // TESTING
    // jaffa_conda(case_sample_reads_ch)       // TESTING
     kallisto_pizzly(case_sample_reads_ch)   // TESTING
