@@ -110,24 +110,24 @@ switch (params.genome) {
         ensemble102_gtf="${genomes_dir}/hg38/gene.annotations/ensembl102/Homo_sapiens.GRCh38.102.gtf"
         ensemble102_transcript_fasta="${genomes_dir}/hg38/gene.annotations/ensembl102/Homo_sapiens.GRCh38.102.cdna.all.fa.gz"
         //Program  files:
-        msisensor_list="${genomes_dir}/hg38/program_DBs/msisensor/hg38_msisensor_scan.txt"
-        genome_lib_starfusion="${genomes_dir}/hg38/program_DBs/CTAT/GRCh38_v33_Apr062020.PNP/ctat_genome_lib_build_dir/"
-        arriba_cytoband="${genomes_dir}/hg38/program_DBs/arriba/cytobands_hg38_GRCh38_v2.1.0.tsv"
-        arriba_blacklist = "${genomes_dir}/hg38/program_DBs/arriba/blacklist_hg38_GRCh38_v2.1.0.tsv.gz"
-        arriba_protein_gff="${genomes_dir}/hg38/program_DBs/arriba/protein_domains_hg38_GRCh38_v2.1.0.gff3"
-        arriba_known_fusions="${genomes_dir}/hg38/program_DBs/arriba/known_fusions_hg38_GRCh38_v2.1.0.tsv.gz"
+        msisensor_list="/data/shared/genomes/hg38/program_DBs/msisensor/hg38_msisensor_scan.txt"
+        genome_lib_starfusion="/data/shared/genomes/hg38/program_DBs/CTAT/GRCh38_v33_Apr062020.PNP/ctat_genome_lib_build_dir/"
+        arriba_cytoband="/data/shared/genomes/hg38/program_DBs/arriba/cytobands_hg38_GRCh38_v2.1.0.tsv"
+        arriba_blacklist = "/data/shared/genomes/hg38/program_DBs/arriba/blacklist_hg38_GRCh38_v2.1.0.tsv.gz"
+        arriba_protein_gff="/data/shared/genomes/hg38/program_DBs/arriba/protein_domains_hg38_GRCh38_v2.1.0.gff3"
+        arriba_known_fusions="/data/shared/genomes/hg38/program_DBs/arriba/known_fusions_hg38_GRCh38_v2.1.0.tsv.gz"
 
         //fusioncallers
-        fusioncatcher_db="${genomes_dir}/hg38/program_DBs/fusioncatcher/human_v102/"
-        fusionreport_db="${genomes_dir}/hg38/program_DBs/fusion_report_db/"
+        fusioncatcher_db="/data/shared/genomes//hg38/program_DBs/fusioncatcher/human_v102/"
+        fusionreport_db="/data/shared/genomes//hg38/program_DBs/fusion_report_db/"
         // Program indexes:
-        index_rsem = "${genomes_dir}/hg38/rsem/rsem_hg38_gencode36"
+        index_rsem = "/data/shared/genomes//hg38/rsem/rsem_hg38_gencode36"
         index_star = "${genomes_dir}/hg38/STAR/"
-        kallisto_index="${genomes_dir}/hg38/program_DBs/kallisto/Homo_sapiens.GRCh38.102.cdna.all_kallisto_K31.idx"
+        kallisto_index="/data/shared/genomes/hg38/program_DBs/kallisto/Homo_sapiens.GRCh38.102.cdna.all_kallisto_K31.idx"
         //regions:
-        qualimap_ROI="${genomes_dir}/hg38/interval.files/210129.hg38.gencode36.codingexons.SM.6col.bed"
-        ROI="${genomes_dir}/genomes/hg38/interval.files/exome.ROIs/211130.hg38.refseq.gencode.fullexons.50bp.SM.bed"
-        gencode36_coding_exons="${genomes_dir}/hg38/interval.files/210129.hg38.gencode36.codingexons.SM.bed"
+        qualimap_ROI="/data/shared/genomes/hg38/interval.files/210129.hg38.gencode36.codingexons.SM.6col.bed"
+        ROI="/data/shared/genomes/genomes/hg38/interval.files/exome.ROIs/211130.hg38.refseq.gencode.fullexons.50bp.SM.bed"
+        gencode36_coding_exons="/data/shared/genomes/hg38/interval.files/210129.hg38.gencode36.codingexons.SM.bed"
         break;
 }
 
