@@ -316,7 +316,7 @@ process rseqc {
 
 
     conda '/lnx01_data3/shared/programmer/miniconda3/envs/rseqc'
-    
+
     input:
     tuple val(caseID),val(sampleID), path(bam), path(bai)// from rseqc_input_bam
 
@@ -608,7 +608,7 @@ process splicing_inhouse_list {
 ///////////////////////////////////////////////////////////////////////////
 
 ///////////////////// FUSIONS ///////////////////////////////////
-
+/*
 process arriba {
     errorStrategy 'ignore'
     tag "$caseID"
@@ -639,8 +639,8 @@ process arriba {
     cat ${caseID}.${sampleID}.arriba.fusions.txt| grep -w -f ${inhouse_genelist} > ${caseID}.${sampleID}.arriba.fusions.INHOUSEFUSION_V2.txt
     """
 }
-
-process arriba_240 {
+*/
+process arriba {
     errorStrategy 'ignore'
     tag "$caseID"
     publishDir "${caseID}/${params.outdir}/genefusions/arriba", mode: 'copy'
