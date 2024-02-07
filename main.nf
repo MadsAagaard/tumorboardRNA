@@ -37,8 +37,20 @@ inhouse_genelist="/data/shared/genomes/databases/genelists/tumortarget/240123.in
 
 multiqc_config="/data/shared/programmer/configfiles/multiqc_config.yaml"
 
-/*
+
 switch (params.server) {
+    case 'lnx02':
+        s_bind="/data/:/data/,/lnx01_data2/:/lnx01_data2/,/fast/:/fast/,/lnx01_data3/:/lnx01_data3/";
+        simgpath="/data/shared/programmer/simg";
+        params.intervals_list="/data/shared/genomes/hg38/interval.files/WGS_splitIntervals/wgs_splitinterval_BWI_subdivision3/*.interval_list";
+        tmpDIR="/fast/TMP/TMP.${user}/";
+        gatk_exec="singularity run -B ${s_bind} ${simgpath}/${gatk_image} gatk";
+        multiqc_config="/data/shared/programmer/configfiles/multiqc_config.yaml"
+        tank_storage="/home/mmaj/tank.kga/data/data.storage.archive/";
+        data_archive="/lnx01_data2/shared/dataArchive/";
+        genomes_dir="/fast/shared/genomes"
+        //modules_dir="/home/mmaj/scripts_lnx01/nextflow_lnx01/dsl2/modules/";
+    break;  
     case 'lnx01':
         syspath="/data/shared";
         s_bind="/data/:/data/,/lnx01_data2/:/lnx01_data2/";
@@ -62,6 +74,7 @@ switch (params.server) {
         modules_dir="/home/mmaj/LNX01_mmaj/scripts_lnx01/nextflow_lnx01/dsl2/modules";
     break;
 }
+/*
 */
 
 def helpMessage() {
