@@ -64,7 +64,7 @@ switch (params.server) {
         //modules_dir="/home/mmaj/scripts_lnx01/nextflow_lnx01/dsl2/modules/";
     break;  
     case 'lnx01':
-        syspath="/data/shared";
+       // syspath="/data/shared";
         s_bind="/data/:/data/,/lnx01_data2/:/lnx01_data2/";
         simgpath="/data/shared/programmer/simg";
         params.intervals_list="/data/shared/genomes/hg38/interval.files/wgs_splitinterval_BWI_subdivision3_GATK_callable/*.interval_list";
@@ -77,7 +77,7 @@ switch (params.server) {
     break;
     case 'kga01':
         simgpath="/data/shared/programmer/simg";
-        syspath="/data/shared";
+      //  syspath="/data/shared";
         s_bind="/data/:/data/";
         tmpDIR="/data/TMP/TMP.${user}/";
         gatk_exec="singularity run -B ${s_bind} ${simgpath}/gatk4261.sif gatk";

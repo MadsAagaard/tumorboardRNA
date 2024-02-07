@@ -43,7 +43,7 @@ switch (params.server) {
         //modules_dir="/home/mmaj/scripts_lnx01/nextflow_lnx01/dsl2/modules/";
     break;    
     case 'lnx01':
-        syspath="/data/shared";
+      //  syspath="/data/shared";
         s_bind="/data/:/data/,/lnx01_data2/:/lnx01_data2/";
         simgpath="/data/shared/programmer/simg";
         params.intervals_list="/data/shared/genomes/hg38/interval.files/wgs_splitinterval_BWI_subdivision3_GATK_callable/*.interval_list";
@@ -56,7 +56,7 @@ switch (params.server) {
     break;
     case 'kga01':
         simgpath="/data/shared/programmer/simg";
-        syspath="/data/shared";
+  //      syspath="/data/shared";
         s_bind="/data/:/data/";
         tmpDIR="/data/TMP/TMP.${user}/";
         gatk_exec="singularity run -B ${s_bind} ${simgpath}/gatk4261.sif gatk";
@@ -126,7 +126,7 @@ switch (params.genome) {
         kallisto_index="${genomes_dir}/hg38/program_DBs/kallisto/Homo_sapiens.GRCh38.102.cdna.all_kallisto_K31.idx"
         //regions:
         qualimap_ROI="${genomes_dir}/hg38/interval.files/210129.hg38.gencode36.codingexons.SM.6col.bed"
-        ROI="${syspath}/genomes/hg38/interval.files/exome.ROIs/211130.hg38.refseq.gencode.fullexons.50bp.SM.bed"
+        ROI="${genomes_dir}/genomes/hg38/interval.files/exome.ROIs/211130.hg38.refseq.gencode.fullexons.50bp.SM.bed"
         gencode36_coding_exons="${genomes_dir}/hg38/interval.files/210129.hg38.gencode36.codingexons.SM.bed"
         break;
 }
