@@ -1032,7 +1032,7 @@ workflow SUB_RNA_FUSION {
 
     main:
     arriba(star_arriba_bam)
-    arriba_240(star_arriba_bam)
+    //arriba_240(star_arriba_bam)
     fusioncatcher(case_sample_reads_ch)     // TESTING
    // jaffa_conda(case_sample_reads_ch)       // TESTING
     kallisto_pizzly(case_sample_reads_ch)   // TESTING
