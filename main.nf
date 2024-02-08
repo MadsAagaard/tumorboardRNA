@@ -19,16 +19,16 @@ params.help                             =false
 params.data                             =null
 params.fastq                            =null
 params.primary                          =null
-params.skipExpression                   =null
 // skip or include individual analysis - unset parameters:
 params.dupradar                         =null   // not run by default
+params.qualimap                         =null   // not run by default
 params.skipVariants                     =null
 params.skipTrim                         =null
 params.skipQC                           =null
-params.qualimap                         =null   // not run by default
-
-
-
+// sub-workflow deselect:
+params.skipAltSplicing                  =null
+params.skipFusion                       =null
+params.skipExpression                   =null
 // Assembly-independent variables:
 
 //inhouse_genelist="/data/shared/genomes/databases/genelists/tumortarget/tumortarget.inhouse.v2.127genes.txt"
@@ -45,7 +45,7 @@ switch (params.gatk) {
     gatk_image="gatk4400.sif";
     break;
     default:
-    gatk_image="gatk4400.sif";
+    gatk_image="gatk4500.sif";
     break;
 }
 
@@ -117,7 +117,7 @@ def helpMessage() {
 
       --samplesheet         path to case samplesheet. Can contain multiple patients/cases (each case in a separate line). 
 
-      --server              Select which server the analysis is performed on (kga01 or lnx01)
+      --server              Select which server the analysis is performed on (lnx01 or lnx02)
                                 Default: lnx01
 
       --fastq               Path to dir with fastq files
@@ -131,8 +131,10 @@ def helpMessage() {
                                 Default: Do not run Dupradar (timeconsuming!)
 
     Analysis selection options:
-      --skipVariants          Do not call variants (HaplotypeCaller) on RNA seq data
-      --skipFusions           Do not call Fusions
+      --skipVariants        Do not call variants (HaplotypeCaller) on RNA seq data
+      --skipFusion          Do not call Fusions
+      --skipAltSplicing     Do not call alternative splicevariants (e.g. exon skipping)
+      --skipExpression      Do not analyse geneexpression (i.e. skip RSEM, HTseq and FeatureCounts)
       
     """.stripIndent()
 }
@@ -219,15 +221,19 @@ workflow {
     if (!params.skipQC) {
         SUB_RNA_QC(SUB_RNA_PREPROCESS.out.star_bam)
     }
-
-    SUB_RNA_EXPRESSION(SUB_RNA_PREPROCESS.out.star_bam,
+    if (!params.skipExpression) {
+        SUB_RNA_EXPRESSION(SUB_RNA_PREPROCESS.out.star_bam,
                        SUB_RNA_PREPROCESS.out.star_rsem_bam)
-
+    }
+    
+    if (!params.skipFusion) {
     SUB_RNA_FUSION(case_sample_reads_ch,
                    SUB_RNA_PREPROCESS.out.star_arriba_bam,
                    SUB_RNA_PREPROCESS.out.star_chimeric_junctions)
-
+    }
     // set trinity splicing input channel: tuple val(caseID), val(sampleID), path(bam),path(bai), path(junction), path(r1),path(r2),path(sj_tab):
+    
+    if (!params.skipAltSplicing) {
     SUB_RNA_PREPROCESS.out.star_bam
     .join(SUB_RNA_PREPROCESS.out.star_junctions)
     .join(trinity_splicing_readinput_ch)
@@ -235,7 +241,7 @@ workflow {
     .set{trinity_splicing_input}
  
     SUB_RNA_ALT_SPLICING(trinity_splicing_input)
-        
+    }    
         //SUB_RNA_PREPROCESS.out.star_bam.join(SUB_RNA_PREPROCESS.out.star_junctions).join(trinity_splicing_readinput_ch).join(SUB_RNA_PREPROCESS.out.star_sjtab))
 }
 
