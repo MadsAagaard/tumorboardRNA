@@ -158,7 +158,7 @@ channel.fromPath(params.samplesheet)
     .set {case_rna_ss}                                     //sampleID(NPN), caseID (from samplesheet)
 
 if (params.fastq) {
-    params.reads="${params.fastq}/**{.,-}{RV1}{.,-}*R{1,2}*{fq,fastq}.gz"
+    params.reads="${params.fastq}/**{.,-}{RV1}{.,-}*R{1,2}*{fq.gz,fastq,fastq.gz}"
     
     channel.fromFilePairs(params.reads, checkIfExists: true)
         .ifEmpty { error "Cannot find any reads matching: ${params.reads}" }
