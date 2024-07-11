@@ -698,7 +698,7 @@ process starfusion {
     mv star-fusion.fusion_predictions.abridged.tsv ${caseID}.${sampleID}_abridged.tsv
     mv star-fusion.fusion_predictions.abridged.coding_effect.tsv ${caseID}.${sampleID}_abridged.coding_effect.tsv
 
-    cat ${caseID}.${sampleID}_abridged.tsv | grep -w -f /data/shared/genomes/databases/genelists/tumortarget/tumortarget.inhouse.v2.127genes.txt > ${caseID}.${sampleID}.StarFusion.INHOUSEFUSION_V2.txt
+    cat ${caseID}.${sampleID}_abridged.tsv | grep -w -f ${inhouse_genelist} > ${caseID}.${sampleID}.StarFusion.INHOUSEFUSION_V2.txt
     """
 }
 
