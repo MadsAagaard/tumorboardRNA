@@ -186,6 +186,8 @@ process align_STAR {
     publishDir "${caseID}/${params.outdir}/QC/", mode: 'copy', pattern: '*.Log.*'
     publishDir "${caseID}/${params.outdir}/BAM/", mode: 'copy', pattern: '*.forArriba.Aligned.*'
  
+    conda '/lnx01_data3/shared/programmer/miniconda3/envs/star2711b'
+
     //read_pairs_star_ch
     input:
     tuple val(caseID), val(sampleID), path(reads)// from fastp_out_ch
@@ -441,7 +443,8 @@ process featureCounts {
     publishDir "/data/shared/projects/tumortarget/expression/featurecounts/", mode: 'copy'
     publishDir "${caseID}/${params.outdir}/QC/", mode: 'copy', pattern: "*.summary"
     cpus 10
-    
+
+    conda '/lnx01_data3/shared/programmer/miniconda3/envs/subread206'
     input:
     tuple val(caseID), val(sampleID), path(bam), path(bai)
     
@@ -484,6 +487,8 @@ process rsem {
     publishDir "/data/shared/projects/tumortarget/expression/rsem/genecounts", mode: 'copy', pattern: "*.genes.results"
     publishDir "/data/shared/projects/tumortarget/expression/rsem/transcriptcounts", mode: 'copy', pattern: "*.isoforms.results"
     publishDir "${caseID}/${params.outdir}/QC/", mode: 'copy', pattern: "*.${caseID}.${sampleID}.RSEM.stat/*"
+
+    conda '/lnx01_data3/shared/programmer/miniconda3/envs/rsem133'
 
     input:
     tuple val(caseID), val(sampleID), path(bam)
@@ -1012,13 +1017,13 @@ workflow SUB_RNA_QC {
     rseqc(star_bam)
     qualimapRNAseq(star_bam)
     qualimapBAMQC(star_bam)
-    rnaseQC(star_bam)
+    //rnaseQC(star_bam)
 
     emit:
     rseqc_out=rseqc.out
     qualimapRNA_out=qualimapRNAseq.out
     qualimapBAMQC_out=qualimapBAMQC.out
-    rnaseQC_out=rnaseQC.out
+    //rnaseQC_out=rnaseQC.out
 }
 
 workflow SUB_RNA_EXPRESSION {
